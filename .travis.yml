@@ -2,15 +2,14 @@ language: python
 
 cache: pip
 
-dist: trusty
-
 python:
  - "3.6"
-
+ - "3.7"
+ - "3.8"
+ 
 before_install:
   - pip install -U pip
-  - chmod +x travis_setup.py
-  - python travis_setup.py
+  - travis_setup.py
 
 install:
   - pip install -e .
