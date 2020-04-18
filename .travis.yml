@@ -9,6 +9,7 @@ python:
 
 before_install:
   - pip install -U pip
+  - chmod +x travis_setup.py
   - ./travis_setup.py
 
 install:
