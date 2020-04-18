@@ -9,7 +9,7 @@ python:
  
 before_install:
   - pip install -U pip
-  - travis_setup.py
+  - sudo python travis_setup.py
 
 install:
   - pip install -e .
