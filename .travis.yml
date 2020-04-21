@@ -2,18 +2,23 @@ language: python
 
 cache: pip
 
+env:
+  global:
+    GEE_API_KEY:
+      secure: ayUgQW1eRAs17u52FFgWY2E5P2vnVffzQNc06KVXCkh5ul0Owjdy/0WHNt3ESE4O8QEPZi+EkNpN1uqFZ5JxuF8EvXM9WZKyO/cYP2pZz6+iv2ULVz1ySxNYVt7JbsBIUo3SwDBCHvExdpw9pAbuLDoGP9FKQgFnYs28nX17libmr1CTn05k9lue0tA+q5cAnKRoVbNfjmmDK2Iu50k9sAC7gTGhvsxTxyR9LjcDLjjs8XcWPBs0dMK6x3j8UldkAd8FMZD4YyYYPaCpXaB7Fkv+hKPmPtY82/Je2fmdLi6UvRkwViW67v5gNn2ZqzFxUCoGQqKor/oOOcZmc05peu5Bk/iJyWz63Ro8e9DTg+V9dZZ3VXfjW4f8ZLuSoziNiisPV+0sGgJOioe6bOewg4Fid9m03Yus3edw4RLxKP4l9H7lCjP8B9dLYPTLF3ZdqOW53yRfYvBkxM0WN2ycPmCC3cUlCFV2y3UJTNWWhukppqp8pVjSmxtEhFgEJIwn7H5lHjMr91aMvVTc3ia913d1DvpUECOY3+3Ke1hBrhfiq70WA02SJrOPT27E2TYrkEOMYXyOZhbtlz7yBQgInZnCHF+6Y8/czgiKJwcNaM9QTC5s1ZSH/mjk8w01VzB/GylcfJi6KZhUoj/mY4UFf0SWlH124j41RiqRXdkbkJg=
+
 python:
- - "3.6"
- - "3.7"
- - "3.8"
- 
+  - '3.6'
+  - '3.7'
+  - '3.8'
+
 before_install:
   - pip install -U pip
   - sudo python travis_setup.py
 
 install:
   - pip install -e .
-  
-# try to build the package
+
 script:
- - python setup.py install
+  - python setup.py install
+
