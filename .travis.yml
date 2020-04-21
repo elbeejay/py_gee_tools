@@ -1,13 +1,15 @@
-
 language: python
 
+cache: pip
+
 python:
+ - "3.6"
  - "3.7"
  - "3.8"
-
+ 
 before_install:
   - pip install -U pip
-  - ./travis_setup.py
+  - sudo python travis_setup.py
 
 install:
   - pip install -e .
