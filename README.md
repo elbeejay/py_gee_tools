@@ -39,3 +39,8 @@ Additional information about the functions and their expected input parameters a
 
 ### Examples
 To be added.
+
+### Notes/Misc.
+Code still under development. 
+
+Contributions are both encouraged and welcome.
