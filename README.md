@@ -24,7 +24,7 @@ This package has been tested on Python 3.6, 3.7 and 3.8
 ## Module Components 
 `landsat_composite.py`
  
-  - `landsat_composite.get_data` : Function to set up a Google Earth Engine task to generate a composite image from all years of a Landsat mission given some area of interest (aoi) and save the results in a Google Drive folder.
+  - `landsat_composite.get_data` : Function to set up a Google Earth Engine task to generate an annual composite image for each year of a Landsat mission given some area of interest (aoi) and save the results in a Google Drive folder.
   
   - `landsat_composite.get_one_year` : Function to set up a Google Earth Engine task to generate a composite image from a specified year from the Landsat mission given some area of interest (aoi) and save the output in a Google Drive folder. The Landsat mission is automatically chosen to match the year specified, for overlapping years, the later mission data is used except in the case of Landsat7 which is avoided when possible.
 
