@@ -5,8 +5,8 @@ import ee
 def get_data(aoi,name,LandsatMission='8'):
     """
     Function to set up a Google Earth Engine task to generate a composite image
-     from each year of a Landsat mission given some area of interest (aoi) and
-      save the results in a Google Drive folder.
+    from each year of a Landsat mission given some area of interest (aoi) and
+    save the results in a Google Drive folder.
 
     Parameters
     ----------
