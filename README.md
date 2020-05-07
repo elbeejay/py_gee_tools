@@ -38,9 +38,19 @@ This package has been tested on Python 3.6, 3.7 and 3.8
 Additional information about the functions and their expected input parameters are provided in their docstrings.
 
 ## Examples
-To be added.
+Full example of `landsat_composite.get_one_year` function [here](examples/Ex_SingleYearFunction.py). The brief one-liner is: 
+
+```python
+get_one_year(aoi,'Example','KrishnaExample','2018')
+```
+
+This example generates an annual composite Landsat 8 image from 2018 of the Krishna River. When visualized in QGIS, the GeoTIFF looks something like this:
+
+<p align="center">
+<img src="https://github.com/elbeejay/py_gee_tools/blob/master/examples/KrishnaRiver2018Landsat.png" alt="ExampleComposite" width="300"/>
+</p>
 
 ## Notes/Misc.
 Code still under development. 
 
-Contributions are both encouraged and welcome.
+Contributions and suggestions are encouraged and welcome.
