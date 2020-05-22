@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = py_gee_tools
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = .
 
 # Put it first so that "make" without argument is like "make help".
 help:
