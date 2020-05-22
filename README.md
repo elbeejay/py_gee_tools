@@ -1,7 +1,7 @@
 # py_gee_tools
 [![Build Status](https://travis-ci.com/elbeejay/py_gee_tools.svg?token=j6zC9aXqWDAY4PjKqpCs&branch=master)](https://travis-ci.com/elbeejay/py_gee_tools)
 
-Helper functions to work with the [Python Google Earth Engine API](https://github.com/google/earthengine-api).
+Helper package to work with the [Python Google Earth Engine API](https://github.com/google/earthengine-api). Documentation currently migrating to: [https://elbeejay.github.io/py_gee_tools](https://elbeejay.github.io/py_gee_tools)
 
 ## Contents
   - [Dependencies](#dependencies)
