@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>gee_python_tools.cloudmask &#8212; py_gee_tools 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>py_gee_tools 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>gee_python_tools.cloudmask</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <h1>Source code for gee_python_tools.cloudmask</h1><div class="highlight"><pre>
+<span></span><span class="c1"># cloud masking function for surface reflectance (SR) data.</span>
+<span class="c1"># From https://github.com/giswqs/qgis-earthengine-examples</span>
+
+<span class="kn">import</span> <span class="nn">ee</span>
+
+<div class="viewcode-block" id="maskL457"><a class="viewcode-back" href="../../apiref/index.html#gee_python_tools.cloudmask.maskL457">[docs]</a><span class="k">def</span> <span class="nf">maskL457</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function for masking clouds from a Landsat 4,5, or 7 image.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image : `Landsat Image Object`</span>
+<span class="sd">        Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    image : `Landsat Image Object`</span>
+<span class="sd">        The same image with the clouds masked out.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    collection = ee.ImageCollection(&#39;LANDSAT/LT05/C01/T1_SR&#39;) \</span>
+<span class="sd">        .filterDate(&#39;2010-04-01&#39;, &#39;2010-07-30&#39;)</span>
+
+<span class="sd">    composite = collection \</span>
+<span class="sd">        .map(maskL457) \</span>
+<span class="sd">        .median()</span>
+
+<span class="sd">    Maps the maskL457 function over a collection of Landsat 5 data and takes the median</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;pixel_qa&#39;</span><span class="p">)</span>
+    <span class="c1"># If the cloud bit (5) is set and the cloud confidence (7) is high</span>
+    <span class="c1"># or the cloud shadow bit is set (3), then it&#39;s a bad pixel.</span>
+    <span class="n">cloud</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">bitwiseAnd</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span> \
+              <span class="o">.</span><span class="n">And</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">bitwiseAnd</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">))</span> \
+              <span class="o">.</span><span class="n">Or</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">bitwiseAnd</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c1"># Remove edge pixels that don&#39;t occur in all bands</span>
+    <span class="n">mask2</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">mask</span><span class="p">()</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">cloud</span><span class="o">.</span><span class="n">Not</span><span class="p">())</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">mask2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maskL8"><a class="viewcode-back" href="../../apiref/index.html#gee_python_tools.cloudmask.maskL8">[docs]</a><span class="k">def</span> <span class="nf">maskL8</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function for masking clouds from a Landsat 8 image.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image : `Landsat Image Object`</span>
+<span class="sd">        Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    image : `Landsat Image Object`</span>
+<span class="sd">        The same image with the clouds masked out.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    collection = ee.ImageCollection(&#39;LANDSAT/LC08/C01/T1_SR&#39;) \</span>
+<span class="sd">        .filterDate(&#39;2016-01-01&#39;, &#39;2016-12-31&#39;) \</span>
+<span class="sd">        .map(maskL8)</span>
+
+<span class="sd">    Maps the maskL8 function over a collection of Landsat 8 data and takes the median</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Bits 3 and 5 are cloud shadow and cloud, respectively.</span>
+    <span class="n">cloudShadowBitMask</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
+    <span class="n">cloudsBitMask</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
+
+    <span class="c1"># Get the pixel QA band.</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;pixel_qa&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Both flags should be set to zero, indicating clear conditions.</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">bitwiseAnd</span><span class="p">(</span><span class="n">cloudShadowBitMask</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> \
+             <span class="o">.</span><span class="n">And</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">bitwiseAnd</span><span class="p">(</span><span class="n">cloudsBitMask</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="c1"># Return the masked image, scaled to reflectance, without the QA bands.</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span> \
+                <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;B[0-9]*&quot;</span><span class="p">)</span> \
+                <span class="o">.</span><span class="n">copyProperties</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;system:time_start&quot;</span><span class="p">])</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, J. Hariharan.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>
