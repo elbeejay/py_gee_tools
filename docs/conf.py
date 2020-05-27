@@ -17,10 +17,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
+import os
+import sys
+sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
+import gee_python_tools
 
 # -- General configuration ------------------------------------------------
 
@@ -32,11 +32,21 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon']
+
+
+# Autosummary / Automodapi settings
+autosummary_generate = True
+automodapi_inheritance_diagram = False
+autodoc_default_flags = ['members', 'inherited-members', 'no-private-members']
+
+# autodoc mock imports
+autodoc_mock_imports = ['ee']
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True

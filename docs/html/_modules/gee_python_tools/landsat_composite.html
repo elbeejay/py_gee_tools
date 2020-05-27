@@ -1,0 +1,372 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>gee_python_tools.landsat_composite &#8212; py_gee_tools 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>py_gee_tools 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>gee_python_tools.landsat_composite</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for gee_python_tools.landsat_composite</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Collect annual composite Landsat Imagery for a given Landsat mission</span>
+
+<span class="kn">import</span> <span class="nn">ee</span>
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../../apiref/index.html#gee_python_tools.landsat_composite.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">aoi</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">LandsatMission</span><span class="o">=</span><span class="s1">&#39;8&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to set up a Google Earth Engine task to generate a composite image</span>
+<span class="sd">    from each year of a Landsat mission given some area of interest (aoi) and</span>
+<span class="sd">    save the results in a Google Drive folder.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    LandsatMission : `str`</span>
+<span class="sd">        A string of the LandSat Mission number e.g. &#39;4&#39;, &#39;5&#39;, &#39;7&#39;, or &#39;8&#39;</span>
+
+<span class="sd">    aoi : `ee.Geometry.Polygon`</span>
+<span class="sd">        An earth engine polygon geometry defined for a given area of interest</span>
+
+<span class="sd">    name : `str`</span>
+<span class="sd">        The name for the folder to generate in Google Drive</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Try to initialize EarthEngine, if unable then try to authenticate</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+
+    <span class="c1"># Define the collection based on the LandsatMission specified.</span>
+    <span class="c1"># Also set the years over which the mission was run.</span>
+    <span class="k">if</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT04/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
+                 <span class="s1">&#39;1983&#39;</span><span class="p">,</span><span class="s1">&#39;1984&#39;</span><span class="p">,</span><span class="s1">&#39;1985&#39;</span><span class="p">,</span><span class="s1">&#39;1986&#39;</span><span class="p">,</span><span class="s1">&#39;1987&#39;</span><span class="p">,</span><span class="s1">&#39;1988&#39;</span><span class="p">,</span><span class="s1">&#39;1989&#39;</span><span class="p">,</span><span class="s1">&#39;1990&#39;</span><span class="p">,</span><span class="s1">&#39;1991&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span>
+                <span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;5&#39;</span><span class="p">:</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT05/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
+                 <span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span><span class="p">,</span><span class="s1">&#39;1994&#39;</span><span class="p">,</span><span class="s1">&#39;1995&#39;</span><span class="p">,</span><span class="s1">&#39;1996&#39;</span><span class="p">,</span><span class="s1">&#39;1997&#39;</span><span class="p">,</span><span class="s1">&#39;1998&#39;</span><span class="p">,</span><span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2001&#39;</span><span class="p">,</span><span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span><span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span>
+                <span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;7&#39;</span><span class="p">:</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LE07/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
+                 <span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span><span class="s1">&#39;2001&#39;</span><span class="p">,</span><span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span><span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span><span class="p">,</span><span class="s1">&#39;2012&#39;</span><span class="p">,</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span><span class="s1">&#39;2014&#39;</span><span class="p">,</span><span class="s1">&#39;2015&#39;</span><span class="p">,</span><span class="s1">&#39;2016&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2017&#39;</span><span class="p">,</span><span class="s1">&#39;2018&#39;</span><span class="p">,</span><span class="s1">&#39;2019&#39;</span>
+                <span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span><span class="s1">&#39;2014&#39;</span><span class="p">,</span><span class="s1">&#39;2015&#39;</span><span class="p">,</span><span class="s1">&#39;2016&#39;</span><span class="p">,</span><span class="s1">&#39;2017&#39;</span><span class="p">,</span><span class="s1">&#39;2018&#39;</span><span class="p">,</span><span class="s1">&#39;2019&#39;</span><span class="p">]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid LandsatMission specified.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Loop through each year</span>
+    <span class="k">for</span> <span class="n">yr</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;-01-01&#39;</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;-12-31&#39;</span><span class="p">)</span>
+
+        <span class="c1"># filter the Landsat image collection using the aoi and filter</span>
+        <span class="n">filteredCollection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span> \
+                                <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">aoi</span><span class="p">)</span> \
+                                <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+
+        <span class="n">best_img</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Algorithms</span><span class="o">.</span><span class="n">Landsat</span><span class="o">.</span><span class="n">simpleComposite</span><span class="p">(</span><span class="n">filteredCollection</span><span class="p">)</span>
+
+        <span class="c1"># Want separate files for the bands of interest</span>
+        <span class="c1"># I&#39;ve only wanted the following Landsat bands: Blue, Green,</span>
+        <span class="c1"># Red, NIR, SWIR1 and SWIR2 could change function to get more/less</span>
+        <span class="c1"># Depends on the LandSat Mission being used</span>
+        <span class="k">if</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;5&#39;</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;7&#39;</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B6&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Export to Google Drive</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">toDrive</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">bands</span><span class="p">,</span>
+                                    <span class="n">region</span><span class="o">=</span><span class="n">aoi</span><span class="p">,</span>
+                                    <span class="n">description</span><span class="o">=</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;_Landsat&#39;</span><span class="o">+</span><span class="n">LandsatMission</span><span class="p">,</span>
+                                    <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;RemoteSensing/&#39;</span><span class="o">+</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="n">scale</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                                    <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:4326&#39;</span><span class="p">)</span>
+
+        <span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job sent to Google Earth Engine&#39;</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="get_one_year"><a class="viewcode-back" href="../../apiref/index.html#gee_python_tools.landsat_composite.get_one_year">[docs]</a><span class="k">def</span> <span class="nf">get_one_year</span><span class="p">(</span><span class="n">aoi</span><span class="p">,</span><span class="n">foldername</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">yr</span><span class="o">=</span><span class="mi">2000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to set up a Google Earth Engine task to generate a composite image</span>
+<span class="sd">    from a specified year from the Landsat mission given some area of interest</span>
+<span class="sd">    (aoi) and save the results in a Google Drive folder. The Landsat mission</span>
+<span class="sd">    is automatically chosen to match the year specified, for overlapping</span>
+<span class="sd">    years, the later mission data is used except in the case of Landsat7</span>
+<span class="sd">    which is avoided when possible.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    aoi : `ee.Geometry.Polygon`</span>
+<span class="sd">        An earth engine polygon geometry defined for a given area of interest</span>
+
+<span class="sd">    foldername : `str`</span>
+<span class="sd">        The name for the folder to generate in Google Drive</span>
+
+<span class="sd">    filename : `str`</span>
+<span class="sd">        Name for the file in addition to the year which will be appeneded</span>
+
+<span class="sd">    yr : `str`</span>
+<span class="sd">        Target year to acquire Landsat composite image. Default = year 2000.</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Try to initialize EarthEngine, if unable then try to authenticate</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+
+    <span class="c1"># Define the collection based on the year specified.</span>
+    <span class="c1"># Landsat4</span>
+    <span class="k">if</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1983&#39;</span><span class="p">,</span><span class="s1">&#39;1984&#39;</span><span class="p">,</span><span class="s1">&#39;1985&#39;</span><span class="p">,</span><span class="s1">&#39;1986&#39;</span><span class="p">,</span><span class="s1">&#39;1987&#39;</span><span class="p">,</span><span class="s1">&#39;1988&#39;</span><span class="p">,</span><span class="s1">&#39;1989&#39;</span><span class="p">,</span><span class="s1">&#39;1990&#39;</span><span class="p">,</span><span class="s1">&#39;1991&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT04/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Landsat5</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span><span class="p">,</span><span class="s1">&#39;1994&#39;</span><span class="p">,</span><span class="s1">&#39;1995&#39;</span><span class="p">,</span><span class="s1">&#39;1996&#39;</span><span class="p">,</span><span class="s1">&#39;1997&#39;</span><span class="p">,</span><span class="s1">&#39;1998&#39;</span><span class="p">,</span><span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;2001&#39;</span><span class="p">,</span><span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span><span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT05/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span><span class="p">,</span><span class="s1">&#39;1994&#39;</span><span class="p">,</span><span class="s1">&#39;1995&#39;</span><span class="p">,</span><span class="s1">&#39;1996&#39;</span><span class="p">,</span><span class="s1">&#39;1997&#39;</span><span class="p">,</span><span class="s1">&#39;1998&#39;</span><span class="p">,</span><span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span><span class="s1">&#39;2001&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span><span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span><span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span>
+        <span class="p">]</span>
+
+    <span class="c1"># Landsat7</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2011&#39;</span><span class="p">,</span><span class="s1">&#39;2012&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;7&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LE07/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Landsat8</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span><span class="s1">&#39;2014&#39;</span><span class="p">,</span><span class="s1">&#39;2015&#39;</span><span class="p">,</span><span class="s1">&#39;2016&#39;</span><span class="p">,</span><span class="s1">&#39;2017&#39;</span><span class="p">,</span><span class="s1">&#39;2018&#39;</span><span class="p">,</span><span class="s1">&#39;2019&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;8&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid year specified.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Generate a composite of any images in the AOI over the year specified</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;-01-01&#39;</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;-12-31&#39;</span><span class="p">)</span>
+
+    <span class="c1"># filter the Landsat image collection using the aoi and filter</span>
+    <span class="n">filteredCollection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span> \
+                            <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">aoi</span><span class="p">)</span> \
+                            <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+
+    <span class="n">best_img</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Algorithms</span><span class="o">.</span><span class="n">Landsat</span><span class="o">.</span><span class="n">simpleComposite</span><span class="p">(</span><span class="n">filteredCollection</span><span class="p">)</span>
+
+    <span class="c1"># Want separate files for the bands of interest</span>
+    <span class="c1"># I&#39;ve only wanted the following Landsat bands: Blue, Green, Red,</span>
+    <span class="c1"># NIR, SWIR1 and SWIR2, could change function to get more of them</span>
+    <span class="c1"># Depends on the LandSat Mission being used</span>
+    <span class="k">if</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;5&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;7&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B6&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Export to Google Drive</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">toDrive</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">bands</span><span class="p">,</span>
+                                <span class="n">region</span><span class="o">=</span><span class="n">aoi</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">yr</span><span class="o">+</span><span class="s1">&#39;_Landsat&#39;</span><span class="o">+</span><span class="n">LandsatMission</span><span class="p">,</span>
+                                <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;RemoteSensing/&#39;</span><span class="o">+</span><span class="n">foldername</span><span class="p">,</span>
+                                <span class="n">scale</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                                <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:4326&#39;</span><span class="p">)</span>
+
+    <span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job sent to Google Earth Engine&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_composite"><a class="viewcode-back" href="../../apiref/index.html#gee_python_tools.landsat_composite.get_composite">[docs]</a><span class="k">def</span> <span class="nf">get_composite</span><span class="p">(</span><span class="n">aoi</span><span class="p">,</span><span class="n">foldername</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">startdate</span><span class="p">,</span><span class="n">enddate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to set up a Google Earth Engine task to generate a composite image</span>
+<span class="sd">    for a specified timeframe within a year of the Landsat mission given some</span>
+<span class="sd">    area of interest (aoi) and save the results in a Google Drive folder. The</span>
+<span class="sd">    Landsat mission is automatically chosen to match the year specified, for</span>
+<span class="sd">    overlapping years, the later mission data is used except in the case of</span>
+<span class="sd">    Landsat7 which is avoided when possible.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    aoi : `ee.Geometry.Polygon`</span>
+<span class="sd">        An earth engine polygon geometry defined for a given area of interest</span>
+
+<span class="sd">    foldername : `str`</span>
+<span class="sd">        The name for the folder to generate in Google Drive</span>
+
+<span class="sd">    filename : `str`</span>
+<span class="sd">        Name for the file in addition to the year which will be appeneded</span>
+
+<span class="sd">    startdate : `str`</span>
+<span class="sd">        Start date for the composite time window. Format is YYYY-MM-DD.</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+
+<span class="sd">    enddate : `str`</span>
+<span class="sd">        End date for the composite time window. Format is YYYY-MM-DD. `enddate`</span>
+<span class="sd">        must be in the same year as `startdate`.</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># check that dates are within the same year, if not raise error</span>
+    <span class="k">if</span> <span class="n">startdate</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="n">enddate</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Start and end dates not within the same year.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Try to initialize EarthEngine, if unable then try to authenticate</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+
+    <span class="c1"># define year</span>
+    <span class="n">yr</span> <span class="o">=</span> <span class="n">startdate</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="c1"># Define the collection based on the year specified.</span>
+    <span class="c1"># Landsat4</span>
+    <span class="k">if</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1983&#39;</span><span class="p">,</span><span class="s1">&#39;1984&#39;</span><span class="p">,</span><span class="s1">&#39;1985&#39;</span><span class="p">,</span><span class="s1">&#39;1986&#39;</span><span class="p">,</span><span class="s1">&#39;1987&#39;</span><span class="p">,</span><span class="s1">&#39;1988&#39;</span><span class="p">,</span><span class="s1">&#39;1989&#39;</span><span class="p">,</span><span class="s1">&#39;1990&#39;</span><span class="p">,</span><span class="s1">&#39;1991&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT04/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Landsat5</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span><span class="p">,</span><span class="s1">&#39;1994&#39;</span><span class="p">,</span><span class="s1">&#39;1995&#39;</span><span class="p">,</span><span class="s1">&#39;1996&#39;</span><span class="p">,</span><span class="s1">&#39;1997&#39;</span><span class="p">,</span><span class="s1">&#39;1998&#39;</span><span class="p">,</span><span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;2001&#39;</span><span class="p">,</span><span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span><span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LT05/C01/T1&#39;</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;1992&#39;</span><span class="p">,</span><span class="s1">&#39;1993&#39;</span><span class="p">,</span><span class="s1">&#39;1994&#39;</span><span class="p">,</span><span class="s1">&#39;1995&#39;</span><span class="p">,</span><span class="s1">&#39;1996&#39;</span><span class="p">,</span><span class="s1">&#39;1997&#39;</span><span class="p">,</span><span class="s1">&#39;1998&#39;</span><span class="p">,</span><span class="s1">&#39;1999&#39;</span><span class="p">,</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span><span class="s1">&#39;2001&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;2002&#39;</span><span class="p">,</span><span class="s1">&#39;2003&#39;</span><span class="p">,</span><span class="s1">&#39;2004&#39;</span><span class="p">,</span><span class="s1">&#39;2005&#39;</span><span class="p">,</span><span class="s1">&#39;2006&#39;</span><span class="p">,</span><span class="s1">&#39;2007&#39;</span><span class="p">,</span><span class="s1">&#39;2008&#39;</span><span class="p">,</span><span class="s1">&#39;2009&#39;</span><span class="p">,</span><span class="s1">&#39;2010&#39;</span><span class="p">,</span><span class="s1">&#39;2011&#39;</span>
+        <span class="p">]</span>
+
+    <span class="c1"># Landsat7</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2011&#39;</span><span class="p">,</span><span class="s1">&#39;2012&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;7&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LE07/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Landsat8</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span><span class="s1">&#39;2014&#39;</span><span class="p">,</span><span class="s1">&#39;2015&#39;</span><span class="p">,</span><span class="s1">&#39;2016&#39;</span><span class="p">,</span><span class="s1">&#39;2017&#39;</span><span class="p">,</span><span class="s1">&#39;2018&#39;</span><span class="p">,</span><span class="s1">&#39;2019&#39;</span><span class="p">]:</span>
+        <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;8&#39;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid year specified.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Generate a composite of any images in the AOI over the year specified</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">startdate</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">enddate</span><span class="p">)</span>
+
+    <span class="c1"># filter the Landsat image collection using the aoi and filter</span>
+    <span class="n">filteredCollection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span> \
+                            <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">aoi</span><span class="p">)</span> \
+                            <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+
+    <span class="n">best_img</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Algorithms</span><span class="o">.</span><span class="n">Landsat</span><span class="o">.</span><span class="n">simpleComposite</span><span class="p">(</span><span class="n">filteredCollection</span><span class="p">)</span>
+
+    <span class="c1"># Want separate files for the bands of interest</span>
+    <span class="c1"># I&#39;ve only wanted the following Landsat bands: Blue, Green, Red,</span>
+    <span class="c1"># NIR, SWIR1 and SWIR2, could change function to get more of them</span>
+    <span class="c1"># Depends on the LandSat Mission being used</span>
+    <span class="k">if</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;5&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;7&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B1&#39;</span><span class="p">,</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="n">best_img</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span><span class="s1">&#39;B3&#39;</span><span class="p">,</span><span class="s1">&#39;B4&#39;</span><span class="p">,</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span><span class="s1">&#39;B6&#39;</span><span class="p">,</span><span class="s1">&#39;B7&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Export to Google Drive</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">toDrive</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">bands</span><span class="p">,</span>
+                                <span class="n">region</span><span class="o">=</span><span class="n">aoi</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">startdate</span><span class="o">+</span><span class="s1">&#39;_to_&#39;</span><span class="o">+</span>
+                                <span class="n">enddate</span><span class="o">+</span><span class="s1">&#39;_Landsat&#39;</span><span class="o">+</span><span class="n">LandsatMission</span><span class="p">,</span>
+                                <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;RemoteSensing/&#39;</span><span class="o">+</span><span class="n">foldername</span><span class="p">,</span>
+                                <span class="n">scale</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                                <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:4326&#39;</span><span class="p">)</span>
+
+    <span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job sent to Google Earth Engine&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, J. Hariharan.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

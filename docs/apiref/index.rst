@@ -4,22 +4,19 @@
 API Reference
 =============
 
-.. todo::
-   Fix the Sphinx-Autodoc
-
 .. toctree::
    :maxdepth: 2
-
-gee_python_tools.cloudmask
---------------------------
-
-.. automodule:: gee_python_tools.cloudmask
-   :members:
-   :special-members:
 
 gee_python_tools.landsat_composite
 ----------------------------------
 
 .. automodule:: gee_python_tools.landsat_composite
-   :members:
-   :special-members:
+
+
+gee_python_tools.cloudmask
+--------------------------
+These are cloud masking functions for surface reflectance (SR) data from `qgis-earthengine-examples <https://github.com/giswqs/qgis-earthengine-examples>`_.
+
+.. automodule:: gee_python_tools.cloudmask
+
+

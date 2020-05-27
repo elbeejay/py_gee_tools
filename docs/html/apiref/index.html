@@ -45,17 +45,133 @@
         
   <div class="section" id="api-reference">
 <span id="apiref"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Fix the Sphinx-Autodoc</p>
-</div>
 <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-gee_python_tools.landsat_composite">
+<span id="gee-python-tools-landsat-composite"></span><h2>gee_python_tools.landsat_composite<a class="headerlink" href="#module-gee_python_tools.landsat_composite" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gee_python_tools.landsat_composite.get_composite">
+<code class="descclassname">gee_python_tools.landsat_composite.</code><code class="descname">get_composite</code><span class="sig-paren">(</span><em>aoi</em>, <em>foldername</em>, <em>filename</em>, <em>startdate</em>, <em>enddate</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gee_python_tools/landsat_composite.html#get_composite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gee_python_tools.landsat_composite.get_composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set up a Google Earth Engine task to generate a composite image
+for a specified timeframe within a year of the Landsat mission given some
+area of interest (aoi) and save the results in a Google Drive folder. The
+Landsat mission is automatically chosen to match the year specified, for
+overlapping years, the later mission data is used except in the case of
+Landsat7 which is avoided when possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>aoi</strong> (<cite>ee.Geometry.Polygon</cite>) – An earth engine polygon geometry defined for a given area of interest</li>
+<li><strong>foldername</strong> (<cite>str</cite>) – The name for the folder to generate in Google Drive</li>
+<li><strong>filename</strong> (<cite>str</cite>) – Name for the file in addition to the year which will be appeneded</li>
+<li><strong>startdate</strong> (<cite>str</cite>) – Start date for the composite time window. Format is YYYY-MM-DD.
+Min year is 1983 (Landsat4) max is 2019 (Landsat8).</li>
+<li><strong>enddate</strong> (<cite>str</cite>) – End date for the composite time window. Format is YYYY-MM-DD. <cite>enddate</cite>
+must be in the same year as <cite>startdate</cite>.
+Min year is 1983 (Landsat4) max is 2019 (Landsat8).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gee_python_tools.landsat_composite.get_data">
+<code class="descclassname">gee_python_tools.landsat_composite.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>aoi</em>, <em>name</em>, <em>LandsatMission='8'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gee_python_tools/landsat_composite.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gee_python_tools.landsat_composite.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set up a Google Earth Engine task to generate a composite image
+from each year of a Landsat mission given some area of interest (aoi) and
+save the results in a Google Drive folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>LandsatMission</strong> (<cite>str</cite>) – A string of the LandSat Mission number e.g. ‘4’, ‘5’, ‘7’, or ‘8’</li>
+<li><strong>aoi</strong> (<cite>ee.Geometry.Polygon</cite>) – An earth engine polygon geometry defined for a given area of interest</li>
+<li><strong>name</strong> (<cite>str</cite>) – The name for the folder to generate in Google Drive</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gee_python_tools.landsat_composite.get_one_year">
+<code class="descclassname">gee_python_tools.landsat_composite.</code><code class="descname">get_one_year</code><span class="sig-paren">(</span><em>aoi</em>, <em>foldername</em>, <em>filename</em>, <em>yr=2000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gee_python_tools/landsat_composite.html#get_one_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gee_python_tools.landsat_composite.get_one_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set up a Google Earth Engine task to generate a composite image
+from a specified year from the Landsat mission given some area of interest
+(aoi) and save the results in a Google Drive folder. The Landsat mission
+is automatically chosen to match the year specified, for overlapping
+years, the later mission data is used except in the case of Landsat7
+which is avoided when possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>aoi</strong> (<cite>ee.Geometry.Polygon</cite>) – An earth engine polygon geometry defined for a given area of interest</li>
+<li><strong>foldername</strong> (<cite>str</cite>) – The name for the folder to generate in Google Drive</li>
+<li><strong>filename</strong> (<cite>str</cite>) – Name for the file in addition to the year which will be appeneded</li>
+<li><strong>yr</strong> (<cite>str</cite>) – Target year to acquire Landsat composite image. Default = year 2000.
+Min year is 1983 (Landsat4) max is 2019 (Landsat8).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="gee-python-tools-cloudmask">
 <h2>gee_python_tools.cloudmask<a class="headerlink" href="#gee-python-tools-cloudmask" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="gee-python-tools-landsat-composite">
-<h2>gee_python_tools.landsat_composite<a class="headerlink" href="#gee-python-tools-landsat-composite" title="Permalink to this headline">¶</a></h2>
+<p>These are cloud masking functions for surface reflectance (SR) data from <a class="reference external" href="https://github.com/giswqs/qgis-earthengine-examples">qgis-earthengine-examples</a>.</p>
+<span class="target" id="module-gee_python_tools.cloudmask"></span><dl class="function">
+<dt id="gee_python_tools.cloudmask.maskL457">
+<code class="descclassname">gee_python_tools.cloudmask.</code><code class="descname">maskL457</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gee_python_tools/cloudmask.html#maskL457"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gee_python_tools.cloudmask.maskL457" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for masking clouds from a Landsat 4,5, or 7 image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<cite>Landsat Image Object</cite>) – Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>image</strong> – The same image with the clouds masked out.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>Landsat Image Object</cite></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>collection = ee.ImageCollection(‘LANDSAT/LT05/C01/T1_SR’)         .filterDate(‘2010-04-01’, ‘2010-07-30’)</p>
+<p>composite = collection         .map(maskL457)         .median()</p>
+<p>Maps the maskL457 function over a collection of Landsat 5 data and takes the median</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gee_python_tools.cloudmask.maskL8">
+<code class="descclassname">gee_python_tools.cloudmask.</code><code class="descname">maskL8</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gee_python_tools/cloudmask.html#maskL8"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gee_python_tools.cloudmask.maskL8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for masking clouds from a Landsat 8 image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<cite>Landsat Image Object</cite>) – Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>image</strong> – The same image with the clouds masked out.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>Landsat Image Object</cite></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>collection = ee.ImageCollection(‘LANDSAT/LC08/C01/T1_SR’)         .filterDate(‘2016-01-01’, ‘2016-12-31’)         .map(maskL8)</p>
+<p>Maps the maskL8 function over a collection of Landsat 8 data and takes the median</p>
+</dd></dl>
+
 </div>
 </div>
 
