@@ -22,3 +22,24 @@ install:
 script:
   - python setup.py install
 
+jobs:
+  include:
+    - stage: docs
+      python: '3.8'
+      install:
+        - pip install -U pip
+        - sudo python travis_setup.py
+        - pip install -e .
+        - pip install sphinx sphinx-automodapi
+        - sudo apt update -y && sudo apt install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended dvipng
+      script:
+        - (cd docs && make html)
+      deploy:
+        provider: pages:git
+        github_token: $GITHUB_TOKEN
+        committer_from_gh: true
+        verbose: true
+        edge: true
+        local-dir: docs/html
+        on:
+          branch: master
