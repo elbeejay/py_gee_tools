@@ -1,16 +1,19 @@
-# cloud masking function for surface reflectance (SR) data.
+"""cloud masking function for surface reflectance (SR) data."""
 # From https://github.com/giswqs/qgis-earthengine-examples
 
 import ee
 
+
 def maskL457(image):
-    '''
+    """Masking clouds from a Landsat 4,5, or 7 image.
+
     Function for masking clouds from a Landsat 4,5, or 7 image.
 
     Parameters
     ----------
     image : `Landsat Image Object`
-        Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.
+        Input Landsat Image Object with the clouds. Should be from a Landsat
+        Surface Reflectance dataset.
 
     Returns
     -------
@@ -26,9 +29,10 @@ def maskL457(image):
         .map(maskL457) \
         .median()
 
-    Maps the maskL457 function over a collection of Landsat 5 data and takes the median
-    '''
+    Maps the maskL457 function over a collection of Landsat 5 data and takes
+    the median
 
+    """
     qa = image.select('pixel_qa')
     # If the cloud bit (5) is set and the cloud confidence (7) is high
     # or the cloud shadow bit is set (3), then it's a bad pixel.
@@ -42,13 +46,15 @@ def maskL457(image):
 
 
 def maskL8(image):
-    '''
+    """Masking clouds from a Landsat 8 image.
+
     Function for masking clouds from a Landsat 8 image.
 
     Parameters
     ----------
     image : `Landsat Image Object`
-        Input Landsat Image Object with the clouds. Should be from a Landsat Surface Reflectance dataset.
+        Input Landsat Image Object with the clouds. Should be from a Landsat
+        Surface Reflectance dataset.
 
     Returns
     -------
@@ -61,9 +67,10 @@ def maskL8(image):
         .filterDate('2016-01-01', '2016-12-31') \
         .map(maskL8)
 
-    Maps the maskL8 function over a collection of Landsat 8 data and takes the median
-    '''
+    Maps the maskL8 function over a collection of Landsat 8 data and takes the
+    median
 
+    """
     # Bits 3 and 5 are cloud shadow and cloud, respectively.
     cloudShadowBitMask = 1 << 3
     cloudsBitMask = 1 << 5
