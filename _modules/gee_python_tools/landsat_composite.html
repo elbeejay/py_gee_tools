@@ -83,12 +83,14 @@
         <span class="n">years</span> <span class="o">=</span> <span class="p">[</span>
                  <span class="s1">&#39;1999&#39;</span><span class="p">,</span> <span class="s1">&#39;2000&#39;</span><span class="p">,</span> <span class="s1">&#39;2001&#39;</span><span class="p">,</span> <span class="s1">&#39;2002&#39;</span><span class="p">,</span> <span class="s1">&#39;2003&#39;</span><span class="p">,</span> <span class="s1">&#39;2004&#39;</span><span class="p">,</span> <span class="s1">&#39;2005&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;2006&#39;</span><span class="p">,</span> <span class="s1">&#39;2007&#39;</span><span class="p">,</span> <span class="s1">&#39;2008&#39;</span><span class="p">,</span> <span class="s1">&#39;2009&#39;</span><span class="p">,</span> <span class="s1">&#39;2010&#39;</span><span class="p">,</span> <span class="s1">&#39;2011&#39;</span><span class="p">,</span> <span class="s1">&#39;2012&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span>
+                 <span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2020&#39;</span>
                 <span class="p">]</span>
 
     <span class="k">elif</span> <span class="n">LandsatMission</span> <span class="o">==</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
-        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">]</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2020&#39;</span><span class="p">]</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid LandsatMission specified.&#39;</span><span class="p">)</span>
@@ -154,7 +156,7 @@
 
 <span class="sd">    yr : `str`</span>
 <span class="sd">        Target year to acquire Landsat composite image. Default = year 2000.</span>
-<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2020 (Landsat8).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Try to initialize EarthEngine, if unable then try to authenticate</span>
@@ -184,7 +186,7 @@
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LE07/C01/T1&#39;</span><span class="p">)</span>
 
     <span class="c1"># Landsat8</span>
-    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">]:</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">]:</span>
         <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;8&#39;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
 
@@ -251,12 +253,12 @@
 
 <span class="sd">    startdate : `str`</span>
 <span class="sd">        Start date for the composite time window. Format is YYYY-MM-DD.</span>
-<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2020 (Landsat8).</span>
 
 <span class="sd">    enddate : `str`</span>
 <span class="sd">        End date for the composite time window. Format is YYYY-MM-DD. `enddate`</span>
 <span class="sd">        must be in the same year as `startdate`.</span>
-<span class="sd">        Min year is 1983 (Landsat4) max is 2019 (Landsat8).</span>
+<span class="sd">        Min year is 1983 (Landsat4) max is 2020 (Landsat8).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check that dates are within the same year, if not raise error</span>
@@ -292,7 +294,7 @@
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LE07/C01/T1&#39;</span><span class="p">)</span>
 
     <span class="c1"># Landsat8</span>
-    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">]:</span>
+    <span class="k">elif</span> <span class="n">yr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;2015&#39;</span><span class="p">,</span> <span class="s1">&#39;2016&#39;</span><span class="p">,</span> <span class="s1">&#39;2017&#39;</span><span class="p">,</span> <span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="s1">&#39;2019&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">]:</span>
         <span class="n">LandsatMission</span> <span class="o">=</span> <span class="s1">&#39;8&#39;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1&#39;</span><span class="p">)</span>
 
