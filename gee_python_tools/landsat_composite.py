@@ -51,12 +51,14 @@ def get_data(aoi, name, LandsatMission='8'):
         years = [
                  '1999', '2000', '2001', '2002', '2003', '2004', '2005',
                  '2006', '2007', '2008', '2009', '2010', '2011', '2012',
-                 '2013', '2014', '2015', '2016', '2017', '2018', '2019'
+                 '2013', '2014', '2015', '2016', '2017', '2018', '2019',
+                 '2020'
                 ]
 
     elif LandsatMission == '8':
         collection = ee.ImageCollection('LANDSAT/LC08/C01/T1')
-        years = ['2013', '2014', '2015', '2016', '2017', '2018', '2019']
+        years = ['2013', '2014', '2015', '2016', '2017', '2018', '2019',
+                 '2020']
 
     else:
         raise ValueError('Invalid LandsatMission specified.')
@@ -122,7 +124,7 @@ def get_one_year(aoi, foldername, filename, yr=2000):
 
     yr : `str`
         Target year to acquire Landsat composite image. Default = year 2000.
-        Min year is 1983 (Landsat4) max is 2019 (Landsat8).
+        Min year is 1983 (Landsat4) max is 2020 (Landsat8).
 
     """
     # Try to initialize EarthEngine, if unable then try to authenticate
@@ -152,7 +154,7 @@ def get_one_year(aoi, foldername, filename, yr=2000):
         collection = ee.ImageCollection('LANDSAT/LE07/C01/T1')
 
     # Landsat8
-    elif yr in ['2013', '2014', '2015', '2016', '2017', '2018', '2019']:
+    elif yr in ['2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']:
         LandsatMission = '8'
         collection = ee.ImageCollection('LANDSAT/LC08/C01/T1')
 
@@ -219,12 +221,12 @@ def get_composite(aoi, foldername, filename, startdate, enddate):
 
     startdate : `str`
         Start date for the composite time window. Format is YYYY-MM-DD.
-        Min year is 1983 (Landsat4) max is 2019 (Landsat8).
+        Min year is 1983 (Landsat4) max is 2020 (Landsat8).
 
     enddate : `str`
         End date for the composite time window. Format is YYYY-MM-DD. `enddate`
         must be in the same year as `startdate`.
-        Min year is 1983 (Landsat4) max is 2019 (Landsat8).
+        Min year is 1983 (Landsat4) max is 2020 (Landsat8).
 
     """
     # check that dates are within the same year, if not raise error
@@ -260,7 +262,7 @@ def get_composite(aoi, foldername, filename, startdate, enddate):
         collection = ee.ImageCollection('LANDSAT/LE07/C01/T1')
 
     # Landsat8
-    elif yr in ['2013', '2014', '2015', '2016', '2017', '2018', '2019']:
+    elif yr in ['2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']:
         LandsatMission = '8'
         collection = ee.ImageCollection('LANDSAT/LC08/C01/T1')
 
